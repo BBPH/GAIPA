@@ -429,7 +429,11 @@ def gpt(prompt):
     )
     return response.output_text
 
-if "record" not in st.session_state:
+def s_m(m):
+    with st.chat_message(m['role']):
+        st.markdown(m["content"])
+
+if "record2" not in st.session_state:
     st.session_state["record2"] = [
         {
             "role": "developer",
@@ -439,11 +443,14 @@ if "record" not in st.session_state:
             규정집 : {rule}                     
         """}]
         
+for m in st.session_state["record2"][1:]:
+    s_m(m)
+
 if prompt := st.chat_input("Say something!!!"):
-    st.session_state["record2"].append({"role":"user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    p1 = {"role":"user", "content": prompt}
+    st.session_state["record2"].append(p1)
+    s_m(p1)
     response = gpt(st.session_state["record2"])
-    st.session_state["record2"].append({"role":"assistant", "content": response})
-    with st.chat_message("assistant"):
-        st.markdown(response)
+    p2 = {"role":"assistant", "content": response}
+    st.session_state["record2"].append(p2)
+    s_m(p2)
